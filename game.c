@@ -61,6 +61,7 @@ char p1Score[5]={'0','0','0','0'};
 char p2Score[5]={'0','0','0','0'};
 int p1score=0;
 int p2score=0;
+int game_over=0;	//1 if p1 wins, 2 if p2 wins
 char Hiscore[4];
 int game_mode=-1;
 int ball_speed=DEFAULT_BALL_SPEED;
@@ -156,6 +157,14 @@ int main(){
 				plot_player2(p2pos,mirror_screen);
 				plot_score_board(mirror_screen);
 				plot_ball(ball->cur_pos,mirror_screen);
+				//check if game over
+				if(game_over!=0){
+					plot_game_over(mirror_screen);
+					draw(&handle,mirror_screen,&mirror_screen_size,&mirror_screen_pos,&WinSize);
+					getch();
+					getch();
+					exit(0);
+				}
 				draw(&handle,mirror_screen,&mirror_screen_size,&mirror_screen_pos,&WinSize);
 	
 		}while(!kbhit());
@@ -170,6 +179,7 @@ int main(){
 			plot_score_board(mirror_screen);
 			plot_game_over(mirror_screen);	
 			draw(&handle,mirror_screen,&mirror_screen_size,&mirror_screen_pos,&WinSize);
+			getch();
 			getch();
 			exit(0);
 		}/*/if player pause
@@ -444,6 +454,8 @@ void update_ball(int p1pos, int p2pos){	//compute the balls trajectory
 			ball->tx=0;
 			ball->ty=0;
 			p2score++;
+			if(p2score-p1score>=5)
+				game_over=2;
 			compute_score(&p2score,p2Score);	
 		}
 		//check if ball hits player 2 wall
@@ -454,6 +466,8 @@ void update_ball(int p1pos, int p2pos){	//compute the balls trajectory
 			ball->tx=0;
 			ball->ty=0;
 			p1score++;
+			if(p1score-p2score>=5)
+				game_over=1;
 			compute_score(&p1score,p1Score);
 		}
 	
@@ -1133,38 +1147,32 @@ void plot_game_over(CHAR_INFO *mirror_screen){
 		mirror_screen[x+13].Char.AsciiChar='!';
 		mirror_screen[x+13].Attributes=FOREGROUND_RED|FOREGROUND_BLUE|FOREGROUND_GREEN|BACKGROUND_RED|BACKGROUND_BLUE;
 	}
-	//if new hiscore
-	if(hiscore<score){
-		FILE *fp=fopen("game.dat","w");
-		if(fp==NULL){
-			getch();
-			exit(0);
-		}
-		fprintf(fp,"%d",score);
-		fclose(fp);
-		//High score
+	//winner
+	if(p1score>p2score){
+		//player 1 wins
 		{
 			x+=70;
-			mirror_screen[x].Char.AsciiChar='H';
+			mirror_screen[x].Char.AsciiChar='P';
 			mirror_screen[x].Attributes=FOREGROUND_RED|FOREGROUND_BLUE|FOREGROUND_GREEN|BACKGROUND_RED|BACKGROUND_BLUE;
-			mirror_screen[x+1].Char.AsciiChar='i';
+			mirror_screen[x+1].Char.AsciiChar='L';
 			mirror_screen[x+1].Attributes=FOREGROUND_RED|FOREGROUND_BLUE|FOREGROUND_GREEN|BACKGROUND_RED|BACKGROUND_BLUE;
-			mirror_screen[x+2].Char.AsciiChar='g';
+			mirror_screen[x+2].Char.AsciiChar='Y';
 			mirror_screen[x+2].Attributes=FOREGROUND_RED|FOREGROUND_BLUE|FOREGROUND_GREEN|BACKGROUND_RED|BACKGROUND_BLUE;
-			mirror_screen[x+3].Char.AsciiChar='h';
+			mirror_screen[x+3].Char.AsciiChar='R';
 			mirror_screen[x+3].Attributes=FOREGROUND_RED|FOREGROUND_BLUE|FOREGROUND_GREEN|BACKGROUND_RED|BACKGROUND_BLUE;
-			mirror_screen[x+4].Char.AsciiChar=' ';
+			mirror_screen[x+4].Char.AsciiChar='1';
 			mirror_screen[x+4].Attributes=FOREGROUND_RED|FOREGROUND_BLUE|FOREGROUND_GREEN|BACKGROUND_RED|BACKGROUND_BLUE;
-			mirror_screen[x+5].Char.AsciiChar='S';
+			mirror_screen[x+5].Char.AsciiChar=' ';
 			mirror_screen[x+5].Attributes=FOREGROUND_INTENSITY|FOREGROUND_GREEN|BACKGROUND_BLUE|BACKGROUND_INTENSITY;
-			mirror_screen[x+6].Char.AsciiChar='c';
+			mirror_screen[x+6].Char.AsciiChar='W';
 			mirror_screen[x+6].Attributes=FOREGROUND_INTENSITY|FOREGROUND_GREEN|BACKGROUND_BLUE|BACKGROUND_INTENSITY;
-			mirror_screen[x+7].Char.AsciiChar='o';
+			mirror_screen[x+7].Char.AsciiChar='I';
 			mirror_screen[x+7].Attributes=FOREGROUND_INTENSITY|FOREGROUND_GREEN|BACKGROUND_BLUE|BACKGROUND_INTENSITY;
-			mirror_screen[x+8].Char.AsciiChar='r';
+			mirror_screen[x+8].Char.AsciiChar='N';
 			mirror_screen[x+8].Attributes=FOREGROUND_INTENSITY|FOREGROUND_GREEN|BACKGROUND_BLUE|BACKGROUND_INTENSITY;
-			mirror_screen[x+9].Char.AsciiChar='e';
+			mirror_screen[x+9].Char.AsciiChar='S';
 			mirror_screen[x+9].Attributes=FOREGROUND_INTENSITY|FOREGROUND_GREEN|BACKGROUND_BLUE|BACKGROUND_INTENSITY;
+			
 			mirror_screen[x+10].Char.AsciiChar=':';
 			mirror_screen[x+10].Attributes=FOREGROUND_RED|FOREGROUND_BLUE|FOREGROUND_GREEN|BACKGROUND_RED|BACKGROUND_BLUE;
 			mirror_screen[x+11].Char.AsciiChar=p1Score[1];
@@ -1177,29 +1185,29 @@ void plot_game_over(CHAR_INFO *mirror_screen){
 		}
 	
 	}
-	else{
-		//print score
+	else if(p2score>p1score){
+		//player 2 wins
 		{
 			x+=70;
-			mirror_screen[x].Char.AsciiChar='C';
+			mirror_screen[x].Char.AsciiChar='P';
 			mirror_screen[x].Attributes=FOREGROUND_RED|FOREGROUND_BLUE|FOREGROUND_GREEN|BACKGROUND_RED|BACKGROUND_BLUE;
-			mirror_screen[x+1].Char.AsciiChar='u';
+			mirror_screen[x+1].Char.AsciiChar='L';
 			mirror_screen[x+1].Attributes=FOREGROUND_RED|FOREGROUND_BLUE|FOREGROUND_GREEN|BACKGROUND_RED|BACKGROUND_BLUE;
-			mirror_screen[x+2].Char.AsciiChar='r';
+			mirror_screen[x+2].Char.AsciiChar='Y';
 			mirror_screen[x+2].Attributes=FOREGROUND_RED|FOREGROUND_BLUE|FOREGROUND_GREEN|BACKGROUND_RED|BACKGROUND_BLUE;
-			mirror_screen[x+3].Char.AsciiChar='r';
+			mirror_screen[x+3].Char.AsciiChar='R';
 			mirror_screen[x+3].Attributes=FOREGROUND_RED|FOREGROUND_BLUE|FOREGROUND_GREEN|BACKGROUND_RED|BACKGROUND_BLUE;
-			mirror_screen[x+4].Char.AsciiChar=' ';
+			mirror_screen[x+4].Char.AsciiChar='2';
 			mirror_screen[x+4].Attributes=FOREGROUND_RED|FOREGROUND_BLUE|FOREGROUND_GREEN|BACKGROUND_RED|BACKGROUND_BLUE;
-			mirror_screen[x+5].Char.AsciiChar='S';
+			mirror_screen[x+5].Char.AsciiChar=' ';
 			mirror_screen[x+5].Attributes=FOREGROUND_INTENSITY|FOREGROUND_GREEN|BACKGROUND_BLUE|BACKGROUND_INTENSITY;
-			mirror_screen[x+6].Char.AsciiChar='c';
+			mirror_screen[x+6].Char.AsciiChar='W';
 			mirror_screen[x+6].Attributes=FOREGROUND_INTENSITY|FOREGROUND_GREEN|BACKGROUND_BLUE|BACKGROUND_INTENSITY;
-			mirror_screen[x+7].Char.AsciiChar='o';
+			mirror_screen[x+7].Char.AsciiChar='I';
 			mirror_screen[x+7].Attributes=FOREGROUND_INTENSITY|FOREGROUND_GREEN|BACKGROUND_BLUE|BACKGROUND_INTENSITY;
-			mirror_screen[x+8].Char.AsciiChar='r';
+			mirror_screen[x+8].Char.AsciiChar='N';
 			mirror_screen[x+8].Attributes=FOREGROUND_INTENSITY|FOREGROUND_GREEN|BACKGROUND_BLUE|BACKGROUND_INTENSITY;
-			mirror_screen[x+9].Char.AsciiChar='e';
+			mirror_screen[x+9].Char.AsciiChar='S';
 			mirror_screen[x+9].Attributes=FOREGROUND_INTENSITY|FOREGROUND_GREEN|BACKGROUND_BLUE|BACKGROUND_INTENSITY;
 			mirror_screen[x+10].Char.AsciiChar=':';
 			mirror_screen[x+10].Attributes=FOREGROUND_RED|FOREGROUND_BLUE|FOREGROUND_GREEN|BACKGROUND_RED|BACKGROUND_BLUE;
@@ -1212,6 +1220,7 @@ void plot_game_over(CHAR_INFO *mirror_screen){
 			
 		}		
 	}
+	
 }
 
 void draw(HANDLE *h,CHAR_INFO *ms,COORD *mss,COORD *msp,SMALL_RECT *ws){
