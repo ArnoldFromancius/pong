@@ -258,6 +258,7 @@ int main(){
 		}				
 	}
 }
+
 void launch_ball(int player){
 	if(player==1){
 		ball->direction=2;
@@ -544,7 +545,6 @@ void update_ball(int p1pos, int p2pos){	//compute the balls trajectory
 		
 }
 
-
 void plot_ball(int pos, CHAR_INFO *mirror_screen){
 		
 		mirror_screen[pos].Char.AsciiChar='0';
@@ -554,6 +554,7 @@ void plot_ball(int pos, CHAR_INFO *mirror_screen){
 void compute_score(int *s, char *score){
 	
 	int i=0,j,x,tmp,temp[4];
+	tmp=*s;
 	while(i<4){
 		x=(*s)%10;
 		(*s)/=10;
@@ -571,6 +572,7 @@ void compute_score(int *s, char *score){
 		i++;
 	}
 	*s=tmp;
+	
 }
 
 int loading(){
