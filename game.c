@@ -54,6 +54,7 @@ void plot_loading(int ,CHAR_INFO*);
 void plot_game_over(CHAR_INFO *);
 void plot_pause(CHAR_INFO *);
 void compute_score(int *, char *);
+void computer_play(int*);
 void update_ball();
 void launch_ball(int player);
 int loading();
@@ -148,6 +149,10 @@ int main(){
 				if(ball_update_counter>=ball_speed){
 					update_ball(p1pos,p2pos);
 					ball_update_counter=0;
+					if(game_mode==1){
+						//Computer play()
+						computer_play(&p2pos);
+					}
 				}
 				ball_update_counter++;
 				
@@ -200,7 +205,7 @@ int main(){
 		}*/
 		
 		//player 2 controls
-		else if(k==A_LEFT||k==a_LEFT){
+		else if((k==A_LEFT||k==a_LEFT)&&game_mode==2){
 			if(p2pos>PLAYER2_MAX_LEFT_POS)
 				p2pos-=2;
 			else if(p2pos==PLAYER2_MAX_LEFT_POS)
@@ -214,7 +219,7 @@ int main(){
 			fflush(stdin);
 			continue;
 		}
-		else if(k==S_RIGHT||k==s_RIGHT){
+		else if((k==S_RIGHT||k==s_RIGHT)&&game_mode==2){
 			if(p2pos<PLAYER2_MAX_RIGHT_POS&&p2pos+2<=PLAYER2_MAX_RIGHT_POS )
 				p2pos+=2;
 			else if(p1pos==PLAYER2_MAX_RIGHT_POS-1)
@@ -228,7 +233,7 @@ int main(){
 			fflush(stdin);
 			continue;
 		}
-		else if(k==Z_DOWN||k==z_DOWN){
+		else if((k==Z_DOWN||k==z_DOWN)&&game_mode==2){
 			if(ball->direction==0&&ball->cur_pos<210){
 				launch_ball(2);
 				continue;
@@ -266,6 +271,30 @@ int main(){
 				launch_ball(1);
 			}
 		}				
+	}
+}
+
+void computer_play(int *cpu_pos){
+	
+	if(ball->cur_pos>1640)
+		return;	//start cpu move when ball is midway
+	int x,y,z;
+	x=ball->cur_pos-(*cpu_pos);
+	if((ball->direction==0)&&(ball->cur_pos==(*cpu_pos)+70)){
+		launch_ball(2);	//to launch ball if neccessary
+		return;
+	}
+	if((x%70)==0||((x+1)%70)==0||((x+2)%70)==0||((x-1)%70==0)||((x-1)%70)==0)
+		return; //ignore if ball is already in line
+	y=ball->cur_pos;
+	while(y>=140){
+		y-=70;	//calculate path towards cpu pos
+	}
+	if(y<(*cpu_pos)){
+		(*cpu_pos)-=2;	//move left
+	}	
+	else if(y>(*cpu_pos)){
+		(*cpu_pos)+=2;	//move right
 	}
 }
 
@@ -469,6 +498,11 @@ void update_ball(int p1pos, int p2pos){	//compute the balls trajectory
 			if(p1score-p2score>=5)
 				game_over=1;
 			compute_score(&p1score,p1Score);
+			
+			if(game_mode==1){ //reset pos for cpu
+				ball->cur_pos=p2pos+70;
+				return;
+			}
 		}
 	
 		//check if ball hits left wall
@@ -568,7 +602,7 @@ void plot_ball(int pos, CHAR_INFO *mirror_screen){
 void compute_score(int *s, char *score){
 	
 	int i=0,j,x,tmp,temp[4];
-	tmp=*s;
+	tmp=(*s);
 	while(i<4){
 		x=(*s)%10;
 		(*s)/=10;
@@ -585,7 +619,7 @@ void compute_score(int *s, char *score){
 		score[i]=temp[i];
 		i++;
 	}
-	*s=tmp;
+	(*s)=tmp;
 	
 }
 
