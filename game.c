@@ -291,10 +291,16 @@ void computer_play(int *cpu_pos){
 		y-=70;	//calculate path towards cpu pos
 	}
 	if(y<(*cpu_pos)){
-		(*cpu_pos)-=2;	//move left
+		if(((*cpu_pos)-4)<0)
+			(*cpu_pos)-=1;	//move left
+		else
+			(*cpu_pos)-=2;	//move left
 	}	
 	else if(y>(*cpu_pos)){
-		(*cpu_pos)+=2;	//move right
+		if(((*cpu_pos)+4)>140)
+			(*cpu_pos)+=1;	//move right
+		else
+			(*cpu_pos)+=2;	//move right
 	}
 }
 
