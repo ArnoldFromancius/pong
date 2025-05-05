@@ -55,4 +55,4 @@ gcc -o pong pong.c
 
 📜 License
 
-This game is open-source under the MIT License. Feel free to fork, modify, and share!
+This game is open-source under the [MIT License](LICENSE). Feel free to fork, modify, and share!
