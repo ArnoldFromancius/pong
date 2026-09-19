@@ -47,12 +47,6 @@ gcc -o pong pong.c
 
     Great for learning real-time input and terminal manipulation in C
 
- Screenshot
-
-(You can optionally add a screenshot here later)
-
-![pong-demo](pong-demo.gif)
-
  License
 
 This game is open-source under the [MIT License](LICENSE). Feel free to fork, modify, and share!
