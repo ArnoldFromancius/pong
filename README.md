@@ -1,7 +1,7 @@
-🕹️ Pong in C
+ Pong in C
 
 This is a simple, terminal-based recreation of the classic Pong game, written in C. It uses basic character-based rendering and keyboard input to create a playable, retro-style arcade experience — right in your terminal!
-🎮 Features
+ Features:
 
     Two-player paddle control
 
@@ -13,11 +13,11 @@ This is a simple, terminal-based recreation of the classic Pong game, written in
 
     Runs entirely in the terminal (CMD)
 
-🧱 Built With
+ Built With:
 
     C (standard C99)
 
-🚀 How to Run
+ How to Run:
 1. Clone the repository:
 
 git clone https://github.com/ArnoldFromancius/pong
@@ -31,7 +31,7 @@ gcc -o pong pong.c
 
 ./pong
 
-🎮 Controls
+ Controls
 
     Player 1: UP (Bounce), LEFT (left), RIGHT (right)
 
@@ -39,7 +39,7 @@ gcc -o pong pong.c
 
     Press Q to quit at any time.
 
-📌 Notes
+ Notes
 
     Tested on windows 7 to windows 10 cmds
 
@@ -47,12 +47,12 @@ gcc -o pong pong.c
 
     Great for learning real-time input and terminal manipulation in C
 
-📸 Screenshot
+ Screenshot
 
 (You can optionally add a screenshot here later)
 
 ![pong-demo](pong-demo.gif)
 
-📜 License
+ License
 
 This game is open-source under the [MIT License](LICENSE). Feel free to fork, modify, and share!
